@@ -9,10 +9,10 @@
   
   <packaging>jar</packaging>
 <!--   <modules> -->
-<!--         <module>api</module> -->
-<!--         <module>main</module> -->
-<!--         <module>test</module> -->
-<!--     </modules> -->
+<!--        <module>api</module> -->
+<!--        <module>main</module> -->
+<!--        <module>test</module> -->
+<!--    </modules> -->
   
   <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,6 +26,18 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+	    <groupId>junitperf</groupId>
+	    <artifactId>junitperf</artifactId>
+	    <version>1.8</version>
+	    <scope>test</scope>
+	</dependency>
+	<dependency>
+	    <groupId>com.carrotsearch</groupId>
+	    <artifactId>junit-benchmarks</artifactId>
+	    <version>0.7.2</version>
+	    <scope>test</scope>
+	</dependency>
   </dependencies>
   
   <build>
@@ -43,7 +55,9 @@
     <testResources>
         <testResource>
             <directory>${basedir}/src/test</directory>
-<!--             <directory>src/test</directory> -->
+        </testResource>
+        <testResource>
+            <directory>src/test</directory>
         </testResource>
     </testResources>
     
@@ -103,15 +117,6 @@
         </plugins>
         </pluginManagement>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
         </plugins>
   </build>
   <dependencyManagement>
