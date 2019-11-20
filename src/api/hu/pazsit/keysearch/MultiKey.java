@@ -2,6 +2,7 @@ package hu.pazsit.keysearch;
 
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.concurrent.ForkJoinPool;
 
 /**
  *
@@ -10,6 +11,7 @@ import java.util.ListIterator;
  */
 public interface MultiKey<K> extends Iterable<K> {
     public static final String ANY = "*";
+    static ForkJoinPool pool = new ForkJoinPool(Runtime.getRuntime().availableProcessors()*4);
 
     /**
      * add/set a new key value to the key list

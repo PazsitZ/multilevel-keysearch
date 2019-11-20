@@ -5,6 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 /**
@@ -36,17 +39,17 @@ public class SimpleMultiKey<K> implements MultiKey<K> {
     @Override
     public boolean isEqual(MultiKey<K> k) {
         if (!getKeyRule().getRule().test(this, k)) {
-//        if (!getKeyRule().getRule().test(k, this)) {
             return false;
         }
 
         boolean identicalPattern = true;
+        BiPredicate<K, K> compRule = getComparisonRelation().getRule();
 
         Iterator<K> it = k.iterator();
         for (K key : keys) {
             if (it.hasNext()) {
 	        	K kItem = it.next();
-	            if (!(getComparisonRelation().getRule().test(key, kItem))) {
+				if (!(compRule.test(key, kItem))) {
 	                return false;
 	            }
         	}

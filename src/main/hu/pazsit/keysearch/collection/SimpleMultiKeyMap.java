@@ -4,6 +4,10 @@ import hu.pazsit.keysearch.KeyValueSorter;
 import hu.pazsit.keysearch.MultiKey;
 import hu.pazsit.keysearch.MultiKeyMap;
 import hu.pazsit.keysearch.SimpleMultiKey;
+
+import static hu.pazsit.keysearch.MultiKey.pool;
+
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -76,11 +80,17 @@ public class SimpleMultiKeyMap<K, V> implements MultiKeyMap<K, V> {
 
     @Override
     public List<V> getAny(MultiKey<K> key) {
-        List<MultiKey<K>> keySet = internalMap.keySet().stream()
-                .filter(k -> k.isEqual(key))
-                .sorted(getSorter())
-                .collect(Collectors.toList());
-
+    	List<MultiKey<K>> keySet = Collections.emptyList();
+    	try {
+    		keySet = pool.submit(() -> internalMap.keySet().stream().parallel()
+		                .filter(k -> k.isEqual(key))
+		                .sorted(getSorter())
+		                .collect(Collectors.toList())
+			).get();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    	
         return keySet.stream()
                 .map(k -> internalMap.get(k))
                 .collect(Collectors.toList());
