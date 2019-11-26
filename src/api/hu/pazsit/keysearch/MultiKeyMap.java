@@ -55,7 +55,7 @@ public interface MultiKeyMap<K, V> {
     V getIfAbsentFirst(MultiKey<K> key);
 
     /**
-     * Gets all of the metching values applied the defined/given {@link MultiKey} Rules and {@link MultiKeyMap} Sorter
+     * Gets all of the matching values applied the defined/given {@link MultiKey} Rules and {@link MultiKeyMap} Sorter
      * @param key
      * @return
      */

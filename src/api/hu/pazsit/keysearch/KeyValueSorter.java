@@ -32,7 +32,7 @@ public class KeyValueSorter {
                 anyValueWeight(k2, weightIncrementalLikeBinary)
         );
     }
-    /** compares keys like a binary value representation based on the place of the Any values */
+    /** compares keys like a incremental value representation based on the place of the Any values */
     public static final <K> ToIntBiFunction<MultiKey<K>, MultiKey<K>> sortByAnyWeightIncremental() {
         return (k1, k2) -> Integer.compare(
                 anyValueWeight(k1, weightIncrementalForContainmentCombined),
@@ -59,7 +59,7 @@ public class KeyValueSorter {
      * @return
      */
     public static <K> Comparator<MultiKey<K>> closesMatch() {
-        return KeyValueSorter.sortBy(keySizeSorter(), sortByAnyWeightBinary());
+        return KeyValueSorter.sortBy(keySizeSorter(), sortByAnyCount());
     }
 
     /**
