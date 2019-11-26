@@ -12,12 +12,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * SimpleMultiKeyMapTest.java
+ * SimpleMultiKeyMapWithStrictCompRulesTest.java <br>
+ * The Comparison Rules defined as: <br>
+ * {@link KeyLengthRule}: lengthwise it should be equal <br>  
+ * {@link KeyComparisonRelation}: the comparison is using exact match only
  *
  * @author Zoltan Pazsit <pazsitz@pazsitz.hu>
  * @copyright Copyright (c) 2019, Zoltan Pazsit
  */
-public class SimpleMultiKeyMapTest {
+public class SimpleMultiKeyMapWithStrictCompRulesTest {
     private static final String AVENGERS = "Avengers";
     private static final String GOTG = "Guardians of the Galaxy";
     private static final String EARTHLING = "earthlings";
@@ -25,16 +28,16 @@ public class SimpleMultiKeyMapTest {
     private static final String HUMAN = "Human";
     private static final String TREE = "Tree";
     
-    Supplier<SimpleMultiKey<String>> lteLengthAnyMatchWithNullKeyValue = () ->
+    Supplier<SimpleMultiKey<String>> identicalLengthEqualKeyMatchValue = () ->
         new CustomMultiKey(
-            KeyLengthRule.matchSmaller(),
-            KeyComparisonRelation.equalAndAny(null),
+            KeyLengthRule.matchIdentical(),
+            KeyComparisonRelation.equal(),
             null
         );
 
     @Test
     public void testMapExactMatch() {
-        MultiKeyMap<String, Object> map = mapValues(new SimpleMultiKeyMap<String, Object>(lteLengthAnyMatchWithNullKeyValue));
+        MultiKeyMap<String, Object> map = mapValues(new SimpleMultiKeyMap<String, Object>(identicalLengthEqualKeyMatchValue));
 
         Assert.assertEquals("Peter Quill", map.get(map.newKey().add(GOTG).add(HUMAN).add("Star-Lord")));
         Assert.assertEquals("Peter Quill", map.get(map.newKey().add(GOTG).add(HUMAN).add("Star-Lord")));
@@ -43,54 +46,49 @@ public class SimpleMultiKeyMapTest {
 
     @Test
     public void testMapWithAny() {
-        MultiKeyMap<String, Object> map = mapValues(new SimpleMultiKeyMap<String, Object>(lteLengthAnyMatchWithNullKeyValue));
+        MultiKeyMap<String, Object> map = mapValues(new SimpleMultiKeyMap<String, Object>(identicalLengthEqualKeyMatchValue));
 
-        Assert.assertEquals("Peter Quill", map.getIfAbsentFirst(map.newKey().add(GOTG).add(HUMAN).addAny()));
-        Assert.assertEquals("Grut", map.getIfAbsentFirst(map.newKey().addAny().addAny().add("Grut")));
-        Assert.assertEquals("Grut", map.getIfAbsentFirst(map.newKey().addAny().add(TREE).addAny()));
+        Assert.assertEquals("Thor", map.getIfAbsentFirst(map.newKey().add(AVENGERS).addAny().addAny()));
     }
 
     @Test
     public void testMapShorterKey() {
-        MultiKeyMap<String, Object> map = mapValues(new SimpleMultiKeyMap<String, Object>(lteLengthAnyMatchWithNullKeyValue));
+        MultiKeyMap<String, Object> map = mapValues(new SimpleMultiKeyMap<String, Object>(identicalLengthEqualKeyMatchValue));
 
         final String gotgHuman = (String) map.getIfAbsentFirst(map.newKey().add(GOTG).add(HUMAN));
-        Assert.assertEquals("Peter Quill", gotgHuman);
-
-        final Object tree = map.getIfAbsentFirst(map.newKey().addAny().add(TREE));
-        Assert.assertEquals("Grut", tree);
+        Assert.assertNull(gotgHuman);
     }
 
     @Test
     public void testMapMatchAny() {
-        MultiKeyMap<String, Object> map = mapValues(new SimpleMultiKeyMap<String, Object>(lteLengthAnyMatchWithNullKeyValue));
+        MultiKeyMap<String, Object> map = mapValues(new SimpleMultiKeyMap<String, Object>(identicalLengthEqualKeyMatchValue));
 
-        final String anyVal = (String) map.getIfAbsentFirst(map.newKey().add(HUMAN));
-        Assert.assertEquals(COMIC_CHARACTERS, anyVal);
+        final String emptyVal = (String) map.getIfAbsentFirst(map.newKey().add(HUMAN));
+        Assert.assertNull(emptyVal);
     }
     
     @Test
     public void testMapNoMatchButAllAny() {
-    	MultiKeyMap<String, Object> map = mapValues(new SimpleMultiKeyMap<String, Object>(lteLengthAnyMatchWithNullKeyValue));
+    	MultiKeyMap<String, Object> map = mapValues(new SimpleMultiKeyMap<String, Object>(identicalLengthEqualKeyMatchValue));
     	
-    	final String anyVal = (String) map.getIfAbsentFirst(map.newKey().add("God"));
-    	Assert.assertEquals(COMIC_CHARACTERS, anyVal);
+    	final String emptyVal = (String) map.getIfAbsentFirst(map.newKey().add("God"));
+    	Assert.assertNull(emptyVal);
     }
     
     @Test
     public void testMapNoMatch() {
     	MultiKeyMap<String, Object> map = mapValues(
-    			new SimpleMultiKeyMap<String, Object>(lteLengthAnyMatchWithNullKeyValue),
+    			new SimpleMultiKeyMap<String, Object>(identicalLengthEqualKeyMatchValue),
     			false
 		);
     	
     	final String anyVal = (String) map.getIfAbsentFirst(map.newKey().add("asd"));
-    	Assert.assertEquals(null, anyVal);
+    	Assert.assertNull(anyVal);
     }
     
     @Test
     public void testMapLonger() {
-    	MultiKeyMap<String, Object> map = mapValues(new SimpleMultiKeyMap<String, Object>(lteLengthAnyMatchWithNullKeyValue));
+    	MultiKeyMap<String, Object> map = mapValues(new SimpleMultiKeyMap<String, Object>(identicalLengthEqualKeyMatchValue));
     	
     	final String anyVal = (String) map.getIfAbsentFirst(map.newKey().add(EARTHLING).add(HUMAN).add("Ben Parker").add("noSuchKeyItem"));
     	Assert.assertEquals(null, anyVal);
@@ -106,8 +104,8 @@ public class SimpleMultiKeyMapTest {
         if (allAny) {
         	map.put(map.newKey().addAny().addAny().addAny(), COMIC_CHARACTERS);
         }
-        map.put(map.newKey().add(AVENGERS).addAny().addAny(), "Thor"); // weightBinary:3; wieghtInc:3, anyContainment: 2
-        map.put(map.newKey().add(EARTHLING).add(HUMAN).add("Ben Parker"), "Ben Parker"); // weightBinary:4; wieghtInc:3, anyContainment: 1
+        map.put(map.newKey().add(AVENGERS).addAny().addAny(), "Thor"); 					 // weightBinary:3; weightInc:3, anyContainment: 2
+        map.put(map.newKey().add(EARTHLING).add(HUMAN).add("Ben Parker"), "Ben Parker"); // weightBinary:4; weightInc:3, anyContainment: 1
         map.put(map.newKey().add(GOTG).add(TREE).add("Grut"), "Grut");
         map.put(map.newKey().add(GOTG).add("Animal").add("Rocket Raccoon"), "Rocket Raccoon");
         map.put(map.newKey().add(GOTG).add(HUMAN).add("Star-Lord"), "Peter Quill");
