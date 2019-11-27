@@ -4,7 +4,10 @@ provides storage and search capabilities on values with multi level hierarchy of
 # Features:
 	- Unlimited level of keys "chained"
 	- using pre-specified custom wildcard with keys on add or on search-get
-	- key comparison and result ordering options
+	- able to fine tune search by
+		- key length
+		- key comparison 
+		- result ordering options (weight, any containment, or custom rules...)
   
 ```java
   SimpleMultiKeyMap map = new SimpleMultiKeyMap();
@@ -18,4 +21,4 @@ provides storage and search capabilities on values with multi level hierarchy of
   
 ## Jar package available from:
 
-http://pazsitz.hu/repo/hu/pazsitz/keysearch/1.0-SNAPSHOT/keysearch.1.0-SNAPSHOT.source.jar
+http://pazsitz.hu/repo/hu/pazsitz/keysearch/1.1-SNAPSHOT/keysearch.1.1-SNAPSHOT.source.jar
