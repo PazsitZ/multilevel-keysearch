@@ -22,3 +22,7 @@ provides storage and search capabilities on values with multi level hierarchy of
 ## Jar package available from:
 
 http://pazsitz.hu/repo/hu/pazsitz/keysearch/1.1-SNAPSHOT/keysearch-1.1-SNAPSHOT-sources.jar
+
+## further reading for details:
+
+http://dev.pazsitz.hu/multilevel-keysearch/
